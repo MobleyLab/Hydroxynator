@@ -86,13 +86,11 @@ def findHydroxylsAlphaCarbons(system):
     hydrogen = 0
     for a in system.atoms:
         if a.type == hydroxyl_h:
-            c = a.charge
-            a.charge = c * chargeScale
+            a.charge *= chargeScale
             hydrogen += 1
         elif a.type == hydroxyl_o:
             oxygen += 1
-            c = a.charge
-            a.charge = c * chargeScale
+            a.charge *= chargeScale
             a.atom_type.sigma = sigmaScale
             a.atom_type.epsilon = epsilonScale
             if len(a.bond_partners) != 2:
@@ -108,15 +106,14 @@ def findHydroxylsAlphaCarbons(system):
         sys.exit
     return system, alpha_carbons, oxygen, hydrogen
 
-def neutralize(system, alpha_carbons):
+def neutralize(system, alpha_carbons, initial_charge):
     # Scale alpha carbon/heavy atom and attached hydrogens. 
     # Make a neutralize list
     neutralize = []
     scales = 0
     junction = []
     for a in alpha_carbons:
-        c = a.charge
-        a.charge = c * chargeScale
+        a.charge *= chargeScale
         scales += 1
         for n in a.bond_partners:
             if n.type[0] == 'h':
@@ -133,14 +130,12 @@ def neutralize(system, alpha_carbons):
                 neutralize.append(n)
     # If there are no neutralizing atoms return the system as is
     if len(neutralize) == 0:
-        print "WARNING: There were no neutralizing atoms found"
         return system, len(neutralize), scales
     # Now neutralize these atoms
-    totalCharge = getTotalCharge(system)
-    neutralFactor = totalCharge / float(len(neutralize))
+    charge_off = getTotalCharge(system) - initial_charge
+    neutralFactor = charge_off / float(len(neutralize))
     for a in neutralize:
-        c = a.charge
-        a.charge = c - neutralFactor
+        a.charge -= neutralFactor
    
     return system, len(neutralize), scales
 
@@ -158,18 +153,19 @@ print "Found %s molecule(s)" %str(len(components))
 
 for i, molecule in enumerate(molecules):
     print "molecule", i+1
+    initial_charge = int(getTotalCharge(molecule)) 
     molecule, alpha_carbons, num_hydroxyl_o, num_hydroxyl_h = findHydroxylsAlphaCarbons(molecule)
     print "\tFound %s hydroxyl groups" % (str(num_hydroxyl_o))
     if num_hydroxyl_o == 0:
         print "No hydroxyl groups found in this molecule"
         continue
-    molecule, num_neutral, num_scale = neutralize(molecule, alpha_carbons)
+    molecule, num_neutral, num_scale = neutralize(molecule, alpha_carbons, initial_charge)
     print "\t%s atoms were fully scaled" % str(num_hydroxyl_o + num_hydroxyl_h + num_scale)
     print "\tUsed %s atom(s) to neutralize the charge on this molecule" %str(num_neutral)
     totalCharge = getTotalCharge(molecule)
     print "\tThe total charge is %.2E" % totalCharge
-    if np.abs(totalCharge) > charge_tol:
-        print "\tWARNING: After scaling, the net charge on the molecule is not within the tolerance (%.2E). If you want a neutral molecule, redistribute this charge manually." % charge_tol
+    if np.abs(totalCharge-initial_charge) > charge_tol:
+        print "\tWARNING: After scaling, the net charge on the molecule is not equal to the initial charge within the tolerance (%.2E). If you want a neutral molecule, redistribute this charge manually." % charge_tol
     molecules[i] = molecule
     print
 
