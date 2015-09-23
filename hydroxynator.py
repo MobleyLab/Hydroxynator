@@ -9,7 +9,7 @@ import numpy as np
 
 """Implements the new GAFF hydoxyl parameterization of Fennell, Wymer, and Mobley (2014), which involves scaling partial charges on hydroxyl and some surrounding atoms, and new LJ parameters for hydroxyl oxygens.
 
-Written by Caitlin Bannan, modeled after hydroxynator.py by David Mobley and hydroxynator.pl by Chris Fennell. Updated using ParmEd tools to read in topology files. With this version forward
+Written by Caitlin Bannan, modeled after hydroxynator.py by David Mobley and hydroxynator.pl by Chris Fennell. Updated using ParmEd tools to read in topology files. 
 
 Modules needed:
     NumPy
@@ -67,25 +67,45 @@ def findHydroxylsAlphaCarbons(system,
 
         # If hydroxyl group is found investigate
         if a.type == hydroxyl_o:
-            if len(a.bond_partners) != 2:
-                print "ERROR: hydroxyl oxygen (%s) has the wrong number of bonded neighbors check your topology file!" % str(a)
-                sys.exit()
+            neighbors = a.bond_partners
+            partner_types = [n.type for n in neighbors]
 
+            # hydroxyl oxygen should always have 2 neighbors
+            if len(neighbors) != 2:
+                oxygenBondError = Exception("ERROR: hydroxyl oxygen (%s) has the wrong number of bonded neighbors check your topology file!" % str(a))
+                raise oxygenBondError
+            
+            # hydroxyl oxygens should always be bound to a hydroxyl hydrogen
+            if not hydroxyl_h in partner_types:
+                noHydroxylHydrogen = Exception("ERROR: One of the hydroxyl oxygens is not bound to a hydroxyl hydrogen. Please check your topology file")
+                raise noHydroxylHydrogen
+
+            # Skip it if the hydroxyl oxygen is a part of a peroxide group
+            if 'os' in [n.type for n in a.bond_partners]:
+                print "WARNING: peroxide functional group found. No scaling or LJ parameter adjustment done for peroxide groups."
+                continue
+
+            # If it passed all the checks add oxygen to hydroxyl oxygen list
             oxygens.append(a)    
-            for neighbor in a.bond_partners:
-                if neighbor.type == hydroxyl_h:
-                    hydrogens.append(neighbor)
+            
+            for n in neighbors:
+                # If it's the hydroxyl hydrogen, add to hydrogen list
+                if n.type == hydroxyl_h:
+                    hydrogens.append(n)
+                
+                # Otherwise check it and add to alpha_carbons list
                 else:
-                    if neighbor in alpha_carbons:
+                    # diols on single atom have not been documented
+                    if n in alpha_carbons:
                         print "WARNING: diols with two hydroxyl groups on the same carbon have not been well documented. For now, alpha carbons (or other atoms) will be scaled for each hydroxyl group attached to it."
-                    elif neighbor.type[0] != 'c':
+                    
+                    # Non-carbon alpha atoms have not been documented
+                    elif n.type[0] != 'c':
                         print "WARNING: hydroxyl groups attached to non-carbon alpha atoms has not been well documented. For now, these will be treated the same as if the alpha atom was a carbon unless the hydroxyl is a part of a peroxide group in which case no scaling will occur."
-                    alpha_carbons.append(neighbor)
 
-    # Check for 'ho' if there is a 'oh'
-    if len(oxygens) != len(hydrogens):
-        print "ERROR: There are a different number of hydroxyl hydrogens and hydroxyl oxygens; check your topology file!"
-        sys.exit
+                    # add neighbor to alpha carbon list
+                    alpha_carbons.append(n)
+
     return oxygens, hydrogens, alpha_carbons
 
 def scaleAndNeutralize(system, oxygens, hydrogens, alpha_carbons,
@@ -232,14 +252,16 @@ def hydroxynate(topfile,
         hydroxyl_h = string, atom type for hydroxyl hydrogen, default = 'ho' from Amber
         charge_tol = float, warning if the final charge is not within this tolerance from the original, default = 0.00001
 
+    output:
+        outputSys = parmed system of molecules with changes for all hydroxyl groups and no change in net charge (within tolerance)
     """
 
     if outtop == None:
         outtop = topfile
 
     if outtop.split('.')[1] != topfile.split('.')[1]:
-        print 'ERROR: input and output files must both be the same file type. Please change your output file extension to match the input file.'
-        sys.exit()
+        wrongOutputFileType = Exception('ERROR: input and output files must both be the same file type. Please change your output file extension to match the input file.')
+        raise wrongOutputFileType
     
     systems = parmed.load_file(topfile)
     components = systems.split()
