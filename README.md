@@ -35,38 +35,37 @@ Here are the options for running from the command line:
 
 Here are the methods available if loaded as a module: 
 
-hydroxynate
-    
-    Parses a topology file using ParmEd tools, changes any molecules with hydroxyl groups. Outputs a topology file with the changes 
-    
-    input:
-        topfile = string, input file that can be read with ParmEd tools
-        outtpu = string, output topology file to be created, if not provided it will write over the topfile
-        sigmaScale = float, LJ parameter, default = 3.21990 Angstroms
-        epsilonScale = float, LJ parameter, default = 0.20207 kcal/mol
-        chargeScale = float, amount the scaled atoms are scaled by, default = 1.20905
-        hydroxyl_o = string, atom type for hyroxyl oxygen, default = 'oh' from Amber
-        hydroxyl_h = string, atom type for hydroxyl hydrogen, default = 'ho' from Amber
-        charge_tol = float, warning if the final charge is not within this tolerance from the original, default = 0.00001
-    output:
-        outputSys = parmed system of molecules with changes for all hydroxyl groups
+    hydroxynate
+        Parses a topology file using ParmEd tools
+        changes any molecules with hydroxyl groups. Outputs a topology file with the changes 
+        input:
+            topfile = string, input file that can be read with ParmEd tools
+            outtpu = string, output topology file to be created, if not provided it will write over the topfile
+            sigmaScale = float, LJ parameter, default = 3.21990 Angstroms
+            epsilonScale = float, LJ parameter, default = 0.20207 kcal/mol
+            chargeScale = float, amount the scaled atoms are scaled by, default = 1.20905
+            hydroxyl_o = string, atom type for hyroxyl oxygen, default = 'oh' from Amber
+            hydroxyl_h = string, atom type for hydroxyl hydrogen, default = 'ho' from Amber
+            charge_tol = float, warning if the final charge is not within this tolerance from the original
+                default = 0.00001
+        output:
+            outputSys = parmed system of molecules with changes for all hydroxyl groups
 
-changeMolecule: 
-    
-    Identifies hydroxyl groups, if found, changes sigma and epsilon values on the hydroxyl oxygen and scales charges near the hydroxyl groups and neutralizes molecule so the total charge is unchanged. 
+    changeMolecule: 
+        Identifies hydroxyl groups
+        changes sigma and epsilon values on the hydroxyl oxygen 
+        Scales charges near the hydroxyl groups 
+        neutralizes molecule so the total charge is unchanged. 
 
-getTotalCharge:
-    
-    Calculates total charge on a molecule or system of molecules from parmed
+    getTotalCharge:
+        Calculates total charge on a molecule or system of molecules from parmed
 
-findHydroxylsAlphaCarbons:
-    
-    Finds the hydroxyl oxygens, hydrogens, and alpha carbons (or heavy atoms) in a parmed molecule
+    findHydroxylsAlphaCarbons:
+        Finds the hydroxyl oxygens, hydrogens, and alpha carbons(or heavy atoms) in a parmed molecule
 
-scaleAndNeutralize:
-    
-    Scales all hydroxyl oxygens, hydrogens, alpha carbons (heavy atoms), and hydrogens attached to alpha atoms. 
-    Changes sigma and epsilon values on hydroxyl oxygens
-    Finds heavy atoms attached to alpha atoms that will be used to neutralize any excess charge so that the total charge on the molecule is not changed
+    scaleAndNeutralize:
+        Scales all hydroxyl oxygens, hydroxyl hydrogens, alpha carbons (heavy atoms)
+        Looks at neighbors on alpha atom scales hydrogens and uses others to neutralize changes in net charge
+        Changes sigma and epsilon values on hydroxyl oxygens
 
 
