@@ -10,7 +10,8 @@ This can be implemented as a module in python or ran from the command line.
 
 Here are the options for running from the command line: 
 
-    Usage: Converts sigma, epsilon, and charge OH values in a GROMACS topology to dielectric corrected values.
+    Usage:  Converts sigma, epsilon, and charge for molecules with hydroxyl group
+            in topology file to dielectric corrected values.
     Usage: [-options] [topology file name]
 
     Options:
@@ -37,17 +38,19 @@ Here are the methods available if loaded as a module:
 
     hydroxynate
         Parses a topology file using ParmEd tools
-        changes any molecules with hydroxyl groups. Outputs a topology file with the changes 
+        changes any molecules with hydroxyl groups. 
+        Outputs a topology file with the changes 
         input:
             topfile = string, input file that can be read with ParmEd tools
-            outtpu = string, output topology file to be created, if not provided it will write over the topfile
+            outtop = string, output topology file to be created
+                     if not provided it will write over the topfile
             sigmaScale = float, LJ parameter, default = 3.21990 Angstroms
             epsilonScale = float, LJ parameter, default = 0.20207 kcal/mol
-            chargeScale = float, amount the scaled atoms are scaled by, default = 1.20905
-            hydroxyl_o = string, atom type for hyroxyl oxygen, default = 'oh' from Amber
-            hydroxyl_h = string, atom type for hydroxyl hydrogen, default = 'ho' from Amber
-            charge_tol = float, warning if the final charge is not within this tolerance from the original
-                default = 0.00001
+            chargeScale = float, scaling fact for charge, default = 1.20905
+            hydroxyl_o = string, atom type for hyroxyl oxygen default = 'oh'
+            hydroxyl_h = string, atom type for hydroxyl hydrogen default = 'ho'
+            charge_tol = float, tolerance for change in final-initial charge
+                         default = 0.00001
         output:
             outputSys = parmed system of molecules with changes for all hydroxyl groups
 
@@ -61,11 +64,12 @@ Here are the methods available if loaded as a module:
         Calculates total charge on a molecule or system of molecules from parmed
 
     findHydroxylsAlphaCarbons:
-        Finds the hydroxyl oxygens, hydrogens, and alpha carbons(or heavy atoms) in a parmed molecule
+        Finds the hydroxyl oxygens, hydrogens, and alpha atoms in a parmed molecule
 
     scaleAndNeutralize:
         Scales all hydroxyl oxygens, hydroxyl hydrogens, alpha carbons (heavy atoms)
-        Looks at neighbors on alpha atom scales hydrogens and uses others to neutralize changes in net charge
+        Looks at neighbors on alpha atom 
+        scales hydrogens and uses others to neutralize change in net charge
         Changes sigma and epsilon values on hydroxyl oxygens
 
 
