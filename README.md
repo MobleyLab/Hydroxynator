@@ -36,7 +36,9 @@ Here are the options for running from the command line:
 Here are the methods available if loaded as a module: 
 
 hydroxynate
+    
     Parses a topology file using ParmEd tools, changes any molecules with hydroxyl groups. Outputs a topology file with the changes 
+    
     input:
         topfile = string, input file that can be read with ParmEd tools
         outtpu = string, output topology file to be created, if not provided it will write over the topfile
@@ -50,15 +52,19 @@ hydroxynate
         outputSys = parmed system of molecules with changes for all hydroxyl groups
 
 changeMolecule: 
+    
     Identifies hydroxyl groups, if found, changes sigma and epsilon values on the hydroxyl oxygen and scales charges near the hydroxyl groups and neutralizes molecule so the total charge is unchanged. 
 
 getTotalCharge:
+    
     Calculates total charge on a molecule or system of molecules from parmed
 
 findHydroxylsAlphaCarbons:
+    
     Finds the hydroxyl oxygens, hydrogens, and alpha carbons (or heavy atoms) in a parmed molecule
 
 scaleAndNeutralize:
+    
     Scales all hydroxyl oxygens, hydrogens, alpha carbons (heavy atoms), and hydrogens attached to alpha atoms. 
     Changes sigma and epsilon values on hydroxyl oxygens
     Finds heavy atoms attached to alpha atoms that will be used to neutralize any excess charge so that the total charge on the molecule is not changed
