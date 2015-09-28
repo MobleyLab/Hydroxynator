@@ -269,15 +269,14 @@ def hydroxynate(topfile,
     numbers = []
     for c in components:
         molecules.append(c[0])
-        numbers.append(c[1])
-
+        numbers.append(len(c[1]))
+        
     print "Found %s molecule(s)" %str(len(components))
 
     for i, molecule in enumerate(molecules):
         print "molecule", i+1
         molecules[i] = changeMolecule(molecule, sigmaScale, epsilonScale, chargeScale, hydroxyl_o, hydroxyl_h, charge_tol)
         print
-
     outputSys = molecules[0] * numbers[0]
     for idx in range(1, len(molecules)):
         outputSys += molecules[idx] * numbers[idx]
