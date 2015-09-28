@@ -223,7 +223,7 @@ def changeMolecule(molecule,
 
     molecule, num_neutral, num_scale = scaleAndNeutralize(molecule, oxygens, hydrogens, alpha_carbons, sigmaScale, epsilonScale, chargeScale, hydroxyl_o, hydroxyl_h)
 
-    print "\t%i number of times an atom was fully scaled" % num_scale
+    print "\tNumber of times an atom was fully scaled:  %i" % num_scale
     print "\tUsed %i atom(s) to neutralize the charge on this molecule" % num_neutral
     totalCharge = getTotalCharge(molecule)
     print "\tThe total charge is %.2E" % totalCharge
