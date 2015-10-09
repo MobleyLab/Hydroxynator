@@ -20,6 +20,7 @@ Change Log:
 - 11/21/13: Fixed bug with tolerance for hydrogen bond lengths; fixed output file name; added option for output topology file name to have different name from input topology file.
 
 - 9/11/2015: Complete rewrite by Caitlin Bannan using ParmEd tools started 
+Theoretically this should be able to handle other file times than GROMACS topology files, but testing has not been done on other file types.
 - 9/22/2015: Added to MobleyLab GitHub repository where changes will be tracked. 
 """
 
@@ -255,10 +256,21 @@ def hydroxynate(topfile,
     output:
         outputSys = parmed system of molecules with changes for all hydroxyl groups and no change in net charge (within tolerance)
     """
+    # If ParmEd is older than 2.0.4 then it will not work, raise an error
+    try:
+        ver = parmed.version
+    except:
+        oldParmEd = Exception('ERROR: ParmEd is too old, please upgrade to 2.0.4 or later')
+        raise oldParmEd
+    if ver < (2,0,4):
+        raise RuntimeError("ParmEd is too old, please upgrade to 2.0.4 or later")
 
+    # If outtop is specified it should have the same name as the input file
     if outtop == None:
         outtop = topfile
 
+    # output and input files should be of the same type
+    # Note I have done no testing of these on file types other than .top
     if outtop.split('.')[1] != topfile.split('.')[1]:
         wrongOutputFileType = Exception('ERROR: input and output files must both be the same file type. Please change your output file extension to match the input file.')
         raise wrongOutputFileType
