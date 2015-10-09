@@ -37,9 +37,11 @@ Here are the options for running from the command line:
                        scaled molecules can be from the net charge on the molecule
                        to begin with. This should always be no bigger than
                        rounding error. Default = 0.00001
-
-Here are the methods available if loaded as a module: 
+ 
 #### Import as a python module
+Here are the methods available if loaded as a module:
+
+
     hydroxynate
         Parses a topology file using ParmEd tools
         changes any molecules with hydroxyl groups. 
