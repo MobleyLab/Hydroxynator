@@ -1,14 +1,17 @@
+#Hydroxynator
+
 Implements the new GAFF hydoxyl parameterization of Fennell, Wymer, and Mobley (2014), which involves scaling partial charges on hydroxyl and some surrounding atoms, and new LJ parameters for hydroxyl oxygens.
 
 Written by Caitlin Bannan, modeled after hydroxynator.py by David Mobley and hydroxynator.pl by Chris Fennell. Updated using ParmEd tools to read in topology files. It has only been tested with GROMACS topology files, but the ParmEd methods used should be able to handle other topology file types.
 
-Modules needed:
-    NumPy
-    ParmEd version 2.0.4 or later
-        available at http://github.com/ParmEd/ParmEd 
+####Modules needed:
+    * NumPy
+    * ParmEd version 2.0.4 or later
+        * available at http://github.com/ParmEd/ParmEd 
 
 This can be implemented as a module in python or ran from the command line. 
 
+#### From the Command Line
 Here are the options for running from the command line: 
 
     Usage:  Converts sigma, epsilon, and charge for molecules with hydroxyl group
@@ -34,8 +37,10 @@ Here are the options for running from the command line:
                        scaled molecules can be from the net charge on the molecule
                        to begin with. This should always be no bigger than
                        rounding error. Default = 0.00001
+ 
+#### Import as a python module
+Here are the methods available if loaded as a module:
 
-Here are the methods available if loaded as a module: 
 
     hydroxynate
         Parses a topology file using ParmEd tools
