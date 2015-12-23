@@ -6,6 +6,15 @@ from math import *
 import parmed        
 import sys
 import numpy as np
+    
+# If ParmEd is older than 2.0.4 then it will not work, raise an error
+try:
+    ver = parmed.version
+    if ver < (2,0,4):
+        raise RuntimeError("ParmEd is too old, please upgrade to 2.0.4 or later")
+except:
+    oldParmEd = Exception('ERROR: ParmEd is too old, please upgrade to 2.0.4 or later')
+    raise oldParmEd
 
 """Implements the new GAFF hydoxyl parameterization of Fennell, Wymer, and Mobley (2014), which involves scaling partial charges on hydroxyl and some surrounding atoms, and new LJ parameters for hydroxyl oxygens.
 
@@ -256,16 +265,7 @@ def hydroxynate(topfile,
     output:
         outputSys = parmed system of molecules with changes for all hydroxyl groups and no change in net charge (within tolerance)
     """
-    # If ParmEd is older than 2.0.4 then it will not work, raise an error
-    try:
-        ver = parmed.version
-    except:
-        oldParmEd = Exception('ERROR: ParmEd is too old, please upgrade to 2.0.4 or later')
-        raise oldParmEd
-    if ver < (2,0,4):
-        raise RuntimeError("ParmEd is too old, please upgrade to 2.0.4 or later")
-
-    # If outtop is specified it should have the same name as the input file
+# If outtop is specified it should have the same name as the input file
     if outtop == None:
         outtop = topfile
 
