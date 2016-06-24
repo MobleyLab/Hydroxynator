@@ -1,7 +1,0 @@
-This is a file to show how forks work
-I will delete it when I'm done
-
-This line was added in the upstream fork
-
-I added a line
-and another line on the upstream fork
