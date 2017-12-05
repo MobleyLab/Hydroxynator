@@ -1,10 +1,11 @@
-#Hydroxynator
+# Hydroxynator
 
 Implements the new GAFF hydoxyl parameterization of Fennell, Wymer, and Mobley (2014), which involves scaling partial charges on hydroxyl and some surrounding atoms, and new LJ parameters for hydroxyl oxygens.
 
 Written by Caitlin Bannan, modeled after hydroxynator.py by David Mobley and hydroxynator.pl by Chris Fennell. Updated using ParmEd tools to read in topology files. It has only been tested with GROMACS topology files, but the ParmEd methods used should be able to handle other topology file types.
 
-####Modules needed:
+#### Modules needed:
+
     * NumPy
     * ParmEd version 2.0.4 or later
         * available at http://github.com/ParmEd/ParmEd 
